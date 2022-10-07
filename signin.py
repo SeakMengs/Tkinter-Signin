@@ -188,7 +188,6 @@ def main():
     root.minsize(width, height)
     root.mainloop()
 
-
-
+#? to prevent duplicate variables
 if __name__ == "__main__":
     main()
