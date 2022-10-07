@@ -79,7 +79,7 @@ def fullScreen():
         # root.attributes('-fullscreen', True)
         # root.geometry(f"{current_width}x{current_height}")
         root.state('normal')
-        root.geometry('1280x720')
+        # root.geometry('1280x720')
         print("fullscreen")
     elif is_fullScreen == False:
         # root.geometry(f"{screenWidth}x{screenHeight}")
@@ -122,7 +122,10 @@ def main():
     titlebar.bind("<Map>", frameMapped) # This brings back the window
     #*----------------------------------------------------------------------------------------------------------------------------------------
 
-    Label(titlebar, text='Yato Bank', font=('Lexend', 16), bg=FRAMEBG, fg=FONTFG).pack(side=LEFT, pady=10, padx=10)
+    icon = Image.open('asset\\bank.png')
+    icon = icon.resize((22, 22))
+    icon = ImageTk.PhotoImage(icon)
+    Label(titlebar, text='  Yato Bank', font=('Lexend', 16), bg=FRAMEBG, fg=FONTFG, image=icon, compound=LEFT).pack(side=LEFT, pady=10, padx=10)
 
     # ? Open image using pil (for resize purpose)
     closeIcon = Image.open("asset\\close.png")
