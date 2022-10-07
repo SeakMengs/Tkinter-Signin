@@ -1,4 +1,3 @@
-from email.mime import image
 from tkinter import *
 from PIL import Image, ImageTk
 from ctypes import windll
