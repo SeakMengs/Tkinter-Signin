@@ -148,27 +148,28 @@ def main():
     form = Frame(root, background=FRAMEBG)
     entryBox = PhotoImage(file='asset\entrybox.png')
     Label(form, text='Sign in', font=('Lexend', 64), bg=FRAMEBG, fg=FONTFG).grid(row=0)
-    Label(form, text='sign in to start managing your bank account', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG).grid(row=1)
+    Label(form, text='sign in to start managing your bank account', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG).grid(row=1, pady=20)
 
-    Label(form, image=entryBox, bg=FRAMEBG).grid(row=2)
+    Label(form, text='Username', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=2, sticky=W, padx=(50))
+    Label(form, image=entryBox, bg=FRAMEBG, compound=BOTTOM).grid(row=3, pady=(0,20))
     username = Entry(form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0, insertbackground='white')
-    # entryPreview(username, "Username")
-    username.grid(row=2, pady=31)
+    username.grid(row=3, pady=(0, 20))
 
-    Label(form, image=entryBox, bg=FRAMEBG).grid(row=3)
+    Label(form, text='Password', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=4, sticky=W, padx=(50))
+    Label(form, image=entryBox, bg=FRAMEBG).grid(row=5, pady=(0,20))
     pw = Entry(form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0,show='*', exportselection=0, insertbackground='white')
-    pw.grid(row=3, pady=31)
+    pw.grid(row=5, pady=(0,20))
 
 
     global checkbox, checkIcon
     checkIcon = PhotoImage(file="asset\\checkbox.png")
     checkbox = Button(form, text='remember me', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, image=checkIcon, compound=LEFT, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG, command=ticked)
-    checkbox.grid(row=4, column=0,sticky=W, padx=(55))
+    checkbox.grid(row=6, column=0,sticky=W, padx=(55))
 
-    Button(form, text='forgot password?', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG).grid(row=4, column=0, sticky=E, padx=(0, 50))
+    Button(form, text='forgot password?', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG).grid(row=6, column=0, sticky=E, padx=(0, 50))
 
     Button(form,text='Login',font=('Lexend Deca', 16), image=entryBox, background=FRAMEBG, foreground=FONTFG,bd=0,
-    compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG).grid(row=5, pady=31)
+    compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG).grid(row=7, pady=31)
 
     # make the frame in the middle
     titlebar.pack(expand=0, fill=BOTH)
