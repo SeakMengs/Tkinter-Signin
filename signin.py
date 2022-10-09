@@ -278,6 +278,8 @@ def main():
 
     root.geometry(f"{width}x{height}+{x}+{y}")
     root.minsize(width, height)
+    # ? window opacity
+    root.attributes('-alpha',0.80)
     root.mainloop()
 
 #? to prevent duplicate variables
