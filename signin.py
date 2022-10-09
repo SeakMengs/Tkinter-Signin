@@ -1,4 +1,7 @@
+import csv
+import json
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from ctypes import windll
 
@@ -86,93 +89,128 @@ def fullScreen():
         root.state('zoomed')
         print("minimized")
 
-def ticked():
-    global is_ticked
+class App():
+    def __init__(self):
+        self.root = root
 
-    checkedIcon = PhotoImage(file="asset\\check.png")
+    def titleBar(self):
+        # ? create my own titlebar
+        root.overrideredirect(True)
+        root.after(10, lambda: set_appwindow(root))
+        self.titlebar = Frame(root, background=FRAMEBG, bd=0)
 
-    if (is_ticked == False):
-        checkbox.config(image=checkedIcon)
-        #* this line is from the help of https://stackoverflow.com/questions/57388865/tkinter-button-doesnt-work-when-i-add-an-image-on-this-button
-        checkbox.image = checkedIcon
-        # *----------------------------------------------------------------------------------------------------------------------------------------
-        is_ticked = True
-    elif (is_ticked == True):
-        checkbox.config(image=checkIcon)
-        checkbox.image = checkIcon
-        is_ticked = False
+        #*----------------------------------------------------------------------------------------------------------------------------------------
+        # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
+        self.titlebar.bind('<Button-1>', SaveLastClickPos)
+        self.titlebar.bind('<B1-Motion>', Dragging)
+        self.titlebar.bind("<Map>", frameMapped) # This brings back the window
+        #*----------------------------------------------------------------------------------------------------------------------------------------
+
+        self.icon = Image.open('asset\\bank.png')
+        self.icon = self.icon.resize((22, 22))
+        self.icon = ImageTk.PhotoImage(self.icon)
+        Label(self.titlebar, text='  Yato Bank', font=('Lexend', 16), bg=FRAMEBG, fg=FONTFG, image=self.icon, compound=LEFT).pack(side=LEFT, pady=10, padx=10)
+
+        # ? Open image using pil (for resize purpose)
+        self.closeIcon = Image.open("asset\\close.png")
+        self.closeIcon = self.closeIcon.resize((24, 24))
+        self.closeIcon = ImageTk.PhotoImage(self.closeIcon)
+        Button(self.titlebar, image=self.closeIcon, command=root.destroy, background=FRAMEBG, bd=0, activebackground=FRAMEBG).pack(side=RIGHT, pady=10, padx=10)
+
+        self.maximizeIcon = Image.open("asset\\maximize.png")
+        self.maximizeIcon = self.maximizeIcon.resize((24, 24))
+        self.maximizeIcon = ImageTk.PhotoImage(self.maximizeIcon)
+        Button(self.titlebar, image=self.maximizeIcon, command=fullScreen, background=FRAMEBG, bd=0, activebackground=FRAMEBG).pack(side=RIGHT, pady=10, padx=10)
+
+        self.minimizeIcon = Image.open("asset\\minus.png")
+        self.minimizeIcon = self.minimizeIcon.resize((24, 24))
+        self.minimizeIcon = ImageTk.PhotoImage(self.minimizeIcon)
+        Button(self.titlebar, image=self.minimizeIcon, command=minimizeGUI, background=FRAMEBG, bd=0, activebackground=FRAMEBG).pack(side=RIGHT, pady=10, padx=10)
+
+            # make the frame in the middle
+        self.titlebar.pack(expand=0, fill=BOTH)
+    
+    def ticked(self):
+        global is_ticked
+
+        self.checkedIcon = PhotoImage(file="asset\\check.png")
+
+        if (is_ticked == False):
+            self.checkbox.config(image=self.checkedIcon)
+            #* this line is from the help of https://stackoverflow.com/questions/57388865/tkinter-button-doesnt-work-when-i-add-an-image-on-this-button
+            self.checkbox.image = self.checkedIcon
+            # *----------------------------------------------------------------------------------------------------------------------------------------
+            is_ticked = True
+        elif (is_ticked == True):
+            self.checkbox.config(image=self.checkIcon)
+            self.checkbox.image = self.checkIcon
+            is_ticked = False
+
+    # ? read from csv into a list
+    def fetchAccount(self):
+        with open('data\\account.csv', 'r') as file:
+            Read = csv.reader(file)
+            field = next(Read)
+            rows = list(Read)
+        return rows
+
+    def checkExist(self):
+        self.exist = False
+        self.Username = self.username.get()
+        self.Password = self.pw.get()
+
+        self.accountDataSet = (self.fetchAccount())
+        for users, pws in self.accountDataSet:
+            if users == self.Username and pws == self.Password:
+                self.exist = True
+                break
+        if (self.exist == True):
+            messagebox.showinfo(title="Account exist", message="Logging in")
+        elif (self.exist == False):
+            messagebox.showerror(title="Account doesn't exist", message="Account doesn't exist")
+
+    def signIn(self):
+        # ? create frame of the form
+        self.form = Frame(root, background=FRAMEBG)
+        self.entryBox = PhotoImage(file='asset\entrybox.png')
+        Label(self.form, text='Sign in', font=('Lexend', 64), bg=FRAMEBG, fg=FONTFG).grid(row=0)
+        Label(self.form, text='sign in to start managing your bank account', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG).grid(row=1, pady=20)
+
+        Label(self.form, text='Username', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=2, sticky=W, padx=(50))
+        Label(self.form, image=self.entryBox, bg=FRAMEBG, compound=BOTTOM).grid(row=3, pady=(0,20))
+        self.username = Entry(self.form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0, insertbackground='white')
+        self.username.grid(row=3, pady=(0, 20))
+
+        Label(self.form, text='Password', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=4, sticky=W, padx=(50))
+        Label(self.form, image=self.entryBox, bg=FRAMEBG).grid(row=5, pady=(0,20))
+        self.pw = Entry(self.form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0,show='*', exportselection=0, insertbackground='white')
+        self.pw.grid(row=5, pady=(0,20))
+
+
+        # global checkbox, checkIcon
+        self.checkIcon = PhotoImage(file="asset\\checkbox.png")
+        self.checkbox = Button(self.form, text='remember me', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, image=self.checkIcon, compound=LEFT, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG, command=self.ticked)
+        self.checkbox.grid(row=6, column=0,sticky=W, padx=(55))
+
+        Button(self.form, text='forgot password?', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG).grid(row=6, column=0, sticky=E, padx=(0, 50))
+
+        self.Login = Button(self.form,text='Login',font=('Lexend Deca', 16), image=self.entryBox, background=FRAMEBG, foreground=FONTFG,bd=0,
+        compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG, command=self.checkExist)
+        self.Login.grid(row=7, pady=31)
+
+        self.form.pack(expand=1)
 
 def main():
     global root, z
     z = 0
     root = Tk()
+    icon = PhotoImage('asset\\icon.ico')
+    root.iconbitmap(True, icon)
+    app = App()
     root.geometry('1280x720')
-    root.title("Yato Bank")
-
-    # ? create my own titlebar
-    root.overrideredirect(True)
-    root.after(10, lambda: set_appwindow(root))
-    titlebar = Frame(root, background=FRAMEBG, bd=0)
-
-    #*----------------------------------------------------------------------------------------------------------------------------------------
-    # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
-    titlebar.bind('<Button-1>', SaveLastClickPos)
-    titlebar.bind('<B1-Motion>', Dragging)
-    titlebar.bind("<Map>", frameMapped) # This brings back the window
-    #*----------------------------------------------------------------------------------------------------------------------------------------
-
-    icon = Image.open('asset\\bank.png')
-    icon = icon.resize((22, 22))
-    icon = ImageTk.PhotoImage(icon)
-    Label(titlebar, text='  Yato Bank', font=('Lexend', 16), bg=FRAMEBG, fg=FONTFG, image=icon, compound=LEFT).pack(side=LEFT, pady=10, padx=10)
-
-    # ? Open image using pil (for resize purpose)
-    closeIcon = Image.open("asset\\close.png")
-    closeIcon = closeIcon.resize((24, 24))
-    closeIcon = ImageTk.PhotoImage(closeIcon)
-    close = Button(titlebar, image=closeIcon, command=root.destroy, background=FRAMEBG, bd=0, activebackground=FRAMEBG).pack(side=RIGHT, pady=10, padx=10)
-
-
-    maximizeIcon = Image.open("asset\\maximize.png")
-    maximizeIcon = maximizeIcon.resize((24, 24))
-    maximizeIcon = ImageTk.PhotoImage(maximizeIcon)
-    maximize = Button(titlebar, image=maximizeIcon, command=fullScreen, background=FRAMEBG, bd=0, activebackground=FRAMEBG).pack(side=RIGHT, pady=10, padx=10)
-
-    minimizeIcon = Image.open("asset\\minus.png")
-    minimizeIcon = minimizeIcon.resize((24, 24))
-    minimizeIcon = ImageTk.PhotoImage(minimizeIcon)
-    minimize = Button(titlebar, image=minimizeIcon, command=minimizeGUI, background=FRAMEBG, bd=0, activebackground=FRAMEBG).pack(side=RIGHT, pady=10, padx=10)
-
-    # ? create frame of the form
-    form = Frame(root, background=FRAMEBG)
-    entryBox = PhotoImage(file='asset\entrybox.png')
-    Label(form, text='Sign in', font=('Lexend', 64), bg=FRAMEBG, fg=FONTFG).grid(row=0)
-    Label(form, text='sign in to start managing your bank account', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG).grid(row=1, pady=20)
-
-    Label(form, text='Username', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=2, sticky=W, padx=(50))
-    Label(form, image=entryBox, bg=FRAMEBG, compound=BOTTOM).grid(row=3, pady=(0,20))
-    username = Entry(form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0, insertbackground='white')
-    username.grid(row=3, pady=(0, 20))
-
-    Label(form, text='Password', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=4, sticky=W, padx=(50))
-    Label(form, image=entryBox, bg=FRAMEBG).grid(row=5, pady=(0,20))
-    pw = Entry(form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0,show='*', exportselection=0, insertbackground='white')
-    pw.grid(row=5, pady=(0,20))
-
-
-    global checkbox, checkIcon
-    checkIcon = PhotoImage(file="asset\\checkbox.png")
-    checkbox = Button(form, text='remember me', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, image=checkIcon, compound=LEFT, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG, command=ticked)
-    checkbox.grid(row=6, column=0,sticky=W, padx=(55))
-
-    Button(form, text='forgot password?', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG).grid(row=6, column=0, sticky=E, padx=(0, 50))
-
-    Button(form,text='Login',font=('Lexend Deca', 16), image=entryBox, background=FRAMEBG, foreground=FONTFG,bd=0,
-    compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG).grid(row=7, pady=31)
-
-    # make the frame in the middle
-    titlebar.pack(expand=0, fill=BOTH)
-    form.pack(expand=1)
+    app.titleBar()
+    app.signIn()
+    
     root.config(background='#005D85')
 
     # makes sure everything is up-to-date
