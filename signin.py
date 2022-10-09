@@ -1,5 +1,4 @@
 import csv
-import json
 from tkinter import *
 from tkinter import messagebox
 from PIL import Image, ImageTk
@@ -92,6 +91,8 @@ def fullScreen():
 class App():
     def __init__(self):
         self.root = root
+        self.userFocus = False
+        self.pwFocus = False
 
     def titleBar(self):
         # ? create my own titlebar
@@ -152,6 +153,8 @@ class App():
             Read = csv.reader(file)
             field = next(Read)
             rows = list(Read)
+        file.close()
+
         return rows
 
     def checkExist(self):
@@ -164,10 +167,53 @@ class App():
             if users == self.Username and pws == self.Password:
                 self.exist = True
                 break
+
         if (self.exist == True):
             messagebox.showinfo(title="Account exist", message="Logging in")
         elif (self.exist == False):
             messagebox.showerror(title="Account doesn't exist", message="Account doesn't exist")
+
+    # def Preview(self):
+    #     # 1ms
+    #     delay = 1000
+    #     print("run")
+    #     # ? if entry box is not selected
+    #     if self.username.focus_get() != None:
+    #         self.userFocus = True
+    #         self.pwFocus = False
+    #         print("userFocus:", self.userFocus)
+    #     elif self.userFocus == False:
+    #         if self.username.get() == "" and self.username.focus_get() == None:
+    #             self.username.insert(0,"Username")
+    #             print(self.username.focus_get())
+
+    #     if self.pw.focus_get() != None:
+    #         self.userFocus = False
+    #         self.pwFocus = True
+    #         print("pwFocus:", self.pwFocus)
+    #     elif self.pwFocus == False:
+    #         if  not self.username.get() and self.username.focus_get() == None:
+    #             self.username.insert(0,"Username")
+    #             print(self.username.focus_get())
+        
+    #     # if self.pwFocus == True:
+    #     #     self.userFocus = False
+    #     # elif self.pwFocus == False:
+    #     #     self.userFocus = True
+
+    #     if self.username.focus_get() == None:
+    #         self.username.after(delay, self.Preview)
+    #     elif self.pw.focus_get == None:
+    #         self.pw.after(delay, self.Preview)
+
+    # def removePreview(self, text):
+    #     if text.get() == "Password" or text.get() == "Username":
+    #         text.delete(0, END)
+
+    #     if self.username.focus_get() != None:
+    #         self.username.after(1000, self.Preview)
+    #     elif self.pw.focus_get != None:
+    #         self.pw.after(1000, self.Preview)
 
     def signIn(self):
         # ? create frame of the form
@@ -180,12 +226,16 @@ class App():
         Label(self.form, image=self.entryBox, bg=FRAMEBG, compound=BOTTOM).grid(row=3, pady=(0,20))
         self.username = Entry(self.form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0, insertbackground='white')
         self.username.grid(row=3, pady=(0, 20))
+        # self.username.bind("<Button-1>", lambda e: self.removePreview(self.username))
 
+    
         Label(self.form, text='Password', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=4, sticky=W, padx=(50))
         Label(self.form, image=self.entryBox, bg=FRAMEBG).grid(row=5, pady=(0,20))
         self.pw = Entry(self.form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0,show='*', exportselection=0, insertbackground='white')
         self.pw.grid(row=5, pady=(0,20))
+        # self.pw.bind("<Button-1>", lambda e: self.removePreview(self.pw))
 
+        # self.Preview()
 
         # global checkbox, checkIcon
         self.checkIcon = PhotoImage(file="asset\\checkbox.png")
@@ -197,6 +247,7 @@ class App():
         self.Login = Button(self.form,text='Login',font=('Lexend Deca', 16), image=self.entryBox, background=FRAMEBG, foreground=FONTFG,bd=0,
         compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG, command=self.checkExist)
         self.Login.grid(row=7, pady=31)
+        self.root.bind("<Return>", lambda e: self.checkExist())
 
         self.form.pack(expand=1)
 
