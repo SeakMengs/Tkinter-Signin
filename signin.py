@@ -1,6 +1,8 @@
+from cProfile import label
 import csv
 from tkinter import *
 from tkinter import messagebox
+from turtle import right
 from PIL import Image, ImageTk
 from ctypes import windll
 
@@ -10,6 +12,8 @@ FONTFG='#FFFFFF'
 BOXBG='#3A96BD'
 global is_ticked 
 is_ticked = False
+inLogin = True
+inSignup = False
 # Some WindowsOS styles, required for task bar integration
 GWL_EXSTYLE = -20
 WS_EX_APPWINDOW = 0x00040000
@@ -173,51 +177,10 @@ class App():
         elif (self.exist == False):
             messagebox.showerror(title="Account doesn't exist", message="Account doesn't exist")
 
-    # def Preview(self):
-    #     # 1ms
-    #     delay = 1000
-    #     print("run")
-    #     # ? if entry box is not selected
-    #     if self.username.focus_get() != None:
-    #         self.userFocus = True
-    #         self.pwFocus = False
-    #         print("userFocus:", self.userFocus)
-    #     elif self.userFocus == False:
-    #         if self.username.get() == "" and self.username.focus_get() == None:
-    #             self.username.insert(0,"Username")
-    #             print(self.username.focus_get())
-
-    #     if self.pw.focus_get() != None:
-    #         self.userFocus = False
-    #         self.pwFocus = True
-    #         print("pwFocus:", self.pwFocus)
-    #     elif self.pwFocus == False:
-    #         if  not self.username.get() and self.username.focus_get() == None:
-    #             self.username.insert(0,"Username")
-    #             print(self.username.focus_get())
-        
-    #     # if self.pwFocus == True:
-    #     #     self.userFocus = False
-    #     # elif self.pwFocus == False:
-    #     #     self.userFocus = True
-
-    #     if self.username.focus_get() == None:
-    #         self.username.after(delay, self.Preview)
-    #     elif self.pw.focus_get == None:
-    #         self.pw.after(delay, self.Preview)
-
-    # def removePreview(self, text):
-    #     if text.get() == "Password" or text.get() == "Username":
-    #         text.delete(0, END)
-
-    #     if self.username.focus_get() != None:
-    #         self.username.after(1000, self.Preview)
-    #     elif self.pw.focus_get != None:
-    #         self.pw.after(1000, self.Preview)
-
     def signIn(self):
         # ? create frame of the form
         self.form = Frame(root, background=FRAMEBG)
+
         self.entryBox = PhotoImage(file='asset\entrybox.png')
         Label(self.form, text='Sign in', font=('Lexend', 64), bg=FRAMEBG, fg=FONTFG).grid(row=0)
         Label(self.form, text='sign in to start managing your bank account', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG).grid(row=1, pady=20)
@@ -226,18 +189,12 @@ class App():
         Label(self.form, image=self.entryBox, bg=FRAMEBG, compound=BOTTOM).grid(row=3, pady=(0,20))
         self.username = Entry(self.form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0, insertbackground='white')
         self.username.grid(row=3, pady=(0, 20))
-        # self.username.bind("<Button-1>", lambda e: self.removePreview(self.username))
-
     
         Label(self.form, text='Password', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=4, sticky=W, padx=(50))
         Label(self.form, image=self.entryBox, bg=FRAMEBG).grid(row=5, pady=(0,20))
         self.pw = Entry(self.form, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0,show='*', exportselection=0, insertbackground='white')
         self.pw.grid(row=5, pady=(0,20))
-        # self.pw.bind("<Button-1>", lambda e: self.removePreview(self.pw))
 
-        # self.Preview()
-
-        # global checkbox, checkIcon
         self.checkIcon = PhotoImage(file="asset\\checkbox.png")
         self.checkbox = Button(self.form, text='remember me', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, image=self.checkIcon, compound=LEFT, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG, command=self.ticked)
         self.checkbox.grid(row=6, column=0,sticky=W, padx=(55))
@@ -247,9 +204,22 @@ class App():
         self.Login = Button(self.form,text='Login',font=('Lexend Deca', 16), image=self.entryBox, background=FRAMEBG, foreground=FONTFG,bd=0,
         compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG, command=self.checkExist)
         self.Login.grid(row=7, pady=31)
+        # ? bind click Enter key to login button
         self.root.bind("<Return>", lambda e: self.checkExist())
 
+        Label(self.form, text='Need an account?', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=8, sticky=W, padx=(68))
+        Button(self.form, text='SIGN UP', font=('Lexend Deca', 16, 'bold'), bg=FRAMEBG, fg=FONTFG, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG, command=self.signUp).grid(row=8, sticky=E, padx=(0, 70))
+        
         self.form.pack(expand=1)
+
+    def signUp(self):
+        global inSignup, inLogin
+        self.form.pack_forget()
+        inSignup = True
+        inLogin = False
+
+        if inSignup == True:
+            root.after(5000, lambda: self.form.pack(expand=1))
 
 def main():
     global root, z
@@ -261,7 +231,6 @@ def main():
     root.geometry('1280x720')
     app.titleBar()
     app.signIn()
-    
     root.config(background='#005D85')
 
     # makes sure everything is up-to-date
