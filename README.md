@@ -3,7 +3,7 @@
 This is a design with customized titlebar!
 
 # Preview 
-![preview](https://user-images.githubusercontent.com/54373229/194660992-841cc88e-c15f-456a-b8cf-ad249e6b2bff.png)
+![preview](https://user-images.githubusercontent.com/54373229/194892898-554ebd8b-5854-4115-9fc3-cd4233f44c9f.png)
 # Preview transparent mode
 ![preview_transparent](https://user-images.githubusercontent.com/54373229/194892659-816f825d-5ed9-45e1-b159-14d2d512f6ff.png)
 # Preview full screen transparent mode
