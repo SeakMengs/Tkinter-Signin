@@ -211,16 +211,20 @@ class loginPage():
         self.Username = self.username.get()
         self.Password = self.pw.get()
 
-        self.accountDataSet = (self.fetchAccount())
-        for users, pws in self.accountDataSet:
-            if users == self.Username and pws == self.Password:
-                self.exist = True
-                break
+        try:
+            self.accountDataSet = (self.fetchAccount())
+            for users, pws in self.accountDataSet:
+                if users == self.Username and pws == self.Password:
+                    self.exist = True
+                    break
+            if (self.exist == True):
+                messagebox.showinfo(title="Yato Bank", message="Logging in")
+            elif (self.exist == False):
+                messagebox.showerror(title="Yato Bank", message="Account doesn't exist")
+                
+        except Exception as err:
+            messagebox.showerror(title="Yato Bank", message=err)
 
-        if (self.exist == True):
-            messagebox.showinfo(title="Yato Bank", message="Logging in")
-        elif (self.exist == False):
-            messagebox.showerror(title="Yato Bank", message="Account doesn't exist")
 
         
     def uiLogo(self):
@@ -233,7 +237,7 @@ class loginPage():
             self.loginLogo = ImageTk.PhotoImage(self.loginLogo)
 
             self.loginBG = Label(self.root, image=self.loginLogo, bg=FRAMEBG)
-            self.loginBG.place(anchor=E, relx = 0.94, rely = .57)
+            self.loginBG.place(anchor=E, relx = 0.95, rely = .57)
 
     #* switch frame
     def startLogin(self):
@@ -280,23 +284,93 @@ class signupPage():
 
         Label(self.signupFrame, text='Pin-Code', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=6, sticky=W, padx=(50))
         Label(self.signupFrame, image=self.entryBox, bg=FRAMEBG).grid(row=7, pady=(0,20))
-        self.pw = Entry(self.signupFrame, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0,show='*', exportselection=0, insertbackground='white')
-        self.pw.grid(row=7, pady=(0,20))
+        self.pin = Entry(self.signupFrame, font=('Lexend Deca', 16), background=BOXBG, foreground=FONTFG,bd=0,show='*', exportselection=0, insertbackground='white')
+        self.pin.grid(row=7, pady=(0,20))
 
         self.checkIcon = PhotoImage(file="asset\\checkbox.png")
         self.checkbox = Button(self.signupFrame, text='Terms and Conditions agreement', font=('Lexend Deca', 10), bg=FRAMEBG, fg=FONTFG, image=self.checkIcon, compound=LEFT, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG, cursor='hand2', command=self.signupTicked)
         self.checkbox.grid(row=8, column=0,sticky=W, padx=(55))
 
         self.signupBtn = Button(self.signupFrame,text='Sign up',font=('Lexend Deca', 16), image=self.entryBox, background=FRAMEBG, foreground=FONTFG,bd=0,
-        compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG, cursor='hand2')
+        compound='center', activebackground=FRAMEBG, activeforeground=FRAMEBG, cursor='hand2', command=self.createAccount)
         self.signupBtn.grid(row=9, pady=31)
         # ? bind click Enter key to login button
-        # self.root.bind("<Return>", lambda e: self.checkExist())
+        self.root.bind("<Return>", lambda e: self.createAccount())
 
         Label(self.signupFrame, text='Already have an account?', font=('Lexend Deca', 16), bg=FRAMEBG, fg=FONTFG,).grid(row=10, sticky=W, padx=(40))
         Button(self.signupFrame, text='SIGN IN', font=('Lexend Deca', 16, 'bold'), bg=FRAMEBG, fg=FONTFG, bd=0, activebackground=FRAMEBG, activeforeground=FONTFG, command=self.changeToLogin, cursor='hand2').grid(row=10, sticky=E, padx=(0, 35))
         
         self.signupFrame.pack(expand=1)
+
+    def createAccount(self):
+        global is_tickedSignup
+        dupName = True
+
+        self.usr = self.username.get()
+        self.pwd = self.pw.get()
+        self.pincode = self.pin.get()
+        usrspace = BooleanVar
+        pwdspace = BooleanVar
+
+        if ' ' in self.usr:
+            usrspace = True
+        else:
+            userspace = False
+        if ' ' in self.pwd:
+            pwdspace =  True
+        else:
+            pwdspace = False
+
+        #? read data to check dup name
+        with open("data\\account.csv", 'r') as f:
+            reader = csv.reader(f)
+            field = next(reader)
+            listAccount = list(reader)
+        f.close()
+
+        for row in listAccount:
+            if row[0] == self.usr:
+                dupName = True
+                print("Dup")
+                break
+            elif row[0] != self.usr:
+                dupName = False
+
+
+        if (len(self.pincode) == 4 and self.usr == '' or self.pwd == ''):
+            messagebox.showerror(title="Yato Bank", message="Please fill the necessary information")
+        elif len(self.pincode) > 4:
+            messagebox.showerror(title="Yato Bank", message="Pin cannot be greater than 4")
+        elif len(self.pincode) < 4:
+            messagebox.showerror(title="Yato Bank", message="Pin length must equal 4")
+        elif (len(self.pincode) == 4 and self.usr != '' and self.pwd != '' and is_tickedSignup == False):
+            messagebox.showerror(title="Yato Bank", message="Terms and Conditions agreement bro 😏")
+        elif (len(self.pincode) == 4 and self.usr != '' and self.pwd != '' and is_tickedSignup == True and dupName == True):
+            messagebox.showerror(title="Yato Bank", message="Username has already taken, find another name? 😏")
+        elif (len(self.pincode) == 4 and self.usr != '' and self.pwd != '' and is_tickedSignup == True and dupName == False and usrspace == True):
+            messagebox.showerror(title="Yato Bank", message="Username cannot contain space🤦")
+        elif (len(self.pincode) == 4 and self.usr != '' and self.pwd != '' and is_tickedSignup == True and dupName == False and pwdspace == True):
+            messagebox.showerror(title="Yato Bank", message="Password cannot contain space🤦")
+
+
+        if (len(self.pincode) == 4 and self.usr != '' and self.pwd != '' and is_tickedSignup == True and dupName == False and userspace == False and pwdspace == False):
+            self.addAccount(self.usr, self.pwd, self.pincode)
+            
+    def addAccount(self, name, password, code):
+        try:
+            # row = [name, password, code]
+            with open('data\\account.csv', 'a', newline='') as add:
+                writer = csv.writer(add)
+                writer.writerow((name, password, code))
+            messagebox.showinfo(title="Yato Bank", message="Account created, login to start your account 😁")
+        except Exception as err:
+            messagebox.showinfo(title="Yato Bank", message=err)
+        finally:
+            add.close()
+            self.changeToLogin()
+
+
+
 
     def signupLogo(self):
         global inLogin, inSignup
@@ -306,7 +380,8 @@ class signupPage():
             self.signUpLogo = ImageTk.PhotoImage(self.signUpLogo)
 
             self.signUpBG = Label(self.root, image=self.signUpLogo, bg=FRAMEBG)
-            self.signUpBG.place(anchor=E, relx = 0.94, rely = .57)
+            #* relx = %x of screen
+            self.signUpBG.place(anchor=E, relx = 0.96, rely = .57)
 
     def signupTicked(self):
         global is_tickedSignup
@@ -345,8 +420,8 @@ def main():
     root.title("Yato Bank")
     root.geometry('1280x720')
 
+    #* comment this function if u don't want custom title
     tittle().titleBar()
-    # app.uiLogo()
     loginPage()
     # signupPage()
     root.config(background='#005D85')
@@ -364,7 +439,7 @@ def main():
     y = int((screen_height/2) - (height/2))
 
     root.geometry(f"{width}x{height}+{x}+{y}")
-    # root.minsize(width, height)
+    root.minsize(width, height)
 
     #*---------------------------- window opacity 
     root.attributes('-alpha',0.80)
