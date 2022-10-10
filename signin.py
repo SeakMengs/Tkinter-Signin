@@ -1,6 +1,7 @@
 import csv
 from tkinter import *
 from tkinter import messagebox
+from turtle import title
 from PIL import Image, ImageTk
 from ctypes import windll
 
@@ -23,6 +24,7 @@ is_tickedSignup = False
 inLogin = True
 inSignup = False
 Titled = False
+Titled2 = False
 # Some WindowsOS styles, required for task bar integration
 GWL_EXSTYLE = -20
 WS_EX_APPWINDOW = 0x00040000
@@ -32,8 +34,13 @@ WS_EX_TOOLWINDOW = 0x00000080
 #*----------------------------------------------------------------------------------------------------------------------------------------
 class tittle():
     def __init__(self):
-    # def titleBar(self):
+
         self.root = root
+        self.titlebar = Frame(root, background=FrameBG, bd=0)
+        self.titlebar2 = Frame(root, background=FrameBG, bd=0)
+
+    # def titleBar(self):
+        global Titled
         # ? Create my own titlebar
         root.overrideredirect(True)
         root.after(10, lambda: self.set_appwindow(root))
@@ -66,11 +73,14 @@ class tittle():
         self.minimizeIcon = ImageTk.PhotoImage(self.minimizeIcon)
         Button(self.titlebar, image=self.minimizeIcon, command=self.minimizeGUI, background=FrameBG, bd=0, activebackground=FrameBG).pack(side=RIGHT, pady=10, padx=10)
         self.titlebar.pack(expand=0, fill=BOTH)
-        global Titled
+        # self.titlebar.pack_forget()
         # make the frame in the middle
-        if Titled == False:    
-            self.titlebar.pack(expand=0, fill=BOTH)
-            Titled = True
+        # if Titled == True: 
+        #     self.titlebar2.pack_forget()
+        #     self.titlebar.pack(expand=0, fill=BOTH)   
+    def startBar(self):
+        self.titlebar = Frame(root, background=FrameBG, bd=0)
+
 
 # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
     def SaveLastClickPos(self, event):
@@ -155,7 +165,7 @@ class loginPage():
 
         self.root = root
         self.form = Frame(root, background=FrameBG)
-        
+
         global inLogin, inSignup
         inSignup = False
         inLogin = True
@@ -261,6 +271,8 @@ class loginPage():
         inSignup = False
         inLogin = True
 
+        # tittle().titlebar.destroy()
+        # tittle().startBar()
         self.form.pack(expand=1)
     
     def changeToSignup(self):
@@ -275,6 +287,7 @@ class signupPage():
     def __init__(self):
         global FrameBG, FontFG, BoxBG, SignupBG, SignupFG, SignupBOX, LoginBG , LoginFG, LoginBOX
         FrameBG, FontFG, BoxBG = SignupBG, SignupFG, SignupBOX
+
         self.root = root
         self.signupFrame = Frame(root, background=FrameBG)
 
@@ -395,9 +408,6 @@ class signupPage():
             add.close()
             self.changeToLogin()
 
-
-
-
     def signupLogo(self):
         global inLogin, inSignup
         if (inSignup == True):
@@ -410,6 +420,7 @@ class signupPage():
             self.FrameBG.place(anchor=E, relx = 0.95, rely = .57)
         else:
             self.FrameBG.place_forget()
+
     def signupTicked(self):
         global is_tickedSignup
         
@@ -431,6 +442,9 @@ class signupPage():
         global inLogin, inSignup
         inSignup = True
         inLogin = False
+        
+        # tittle().titlebar.destroy()
+        # tittle().startBar()
         self.signupFrame.pack(expand=1)
 
     def changeToLogin(self):
