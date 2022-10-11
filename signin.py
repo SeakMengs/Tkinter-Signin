@@ -91,7 +91,7 @@ class tittle():
             pass
     def startBar(self):
         self.titlebar.pack_forget()
-        tittle().titleBar()
+        # tittle().titleBar()
         print("Destroyed")
         
 
