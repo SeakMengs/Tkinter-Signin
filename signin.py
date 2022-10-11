@@ -23,8 +23,7 @@ is_ticked = False
 is_tickedSignup = False
 inLogin = True
 inSignup = False
-Titled = False
-Titled2 = False
+RunOnce = 0
 # Some WindowsOS styles, required for task bar integration
 GWL_EXSTYLE = -20
 WS_EX_APPWINDOW = 0x00040000
@@ -35,16 +34,25 @@ WS_EX_TOOLWINDOW = 0x00000080
 class tittle():
     def __init__(self):
 
+        global FrameBG, FontFG, BoxBG, SignupBG, SignupFG, SignupBOX, LoginBG , LoginFG, LoginBOX
+        global inLogin, inSignup
+
+        if inLogin == True:
+            FrameBG, FontFG, BoxBG = LoginBG, LoginFG, LoginBOX
+        if inSignup == True:
+            print('change to purple')
+            FrameBG, FontFG, BoxBG = SignupBG, SignupFG, SignupBOX
+
         self.root = root
         self.titlebar = Frame(root, background=FrameBG, bd=0)
-        self.titlebar2 = Frame(root, background=FrameBG, bd=0)
 
-    # def titleBar(self):
-        global Titled
+    def titleBar(self):
         # ? Create my own titlebar
+        global RunOnce
+
         root.overrideredirect(True)
         root.after(10, lambda: self.set_appwindow(root))
-        self.titlebar = Frame(root, background=FrameBG, bd=0)
+        # self.titlebar = Frame(root, background=FrameBG, bd=0)
         #*----------------------------------------------------------------------------------------------------------------------------------------
         # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
         self.titlebar.bind('<Button-1>', self.SaveLastClickPos)
@@ -72,15 +80,20 @@ class tittle():
         self.minimizeIcon = self.minimizeIcon.resize((24, 24))
         self.minimizeIcon = ImageTk.PhotoImage(self.minimizeIcon)
         Button(self.titlebar, image=self.minimizeIcon, command=self.minimizeGUI, background=FrameBG, bd=0, activebackground=FrameBG).pack(side=RIGHT, pady=10, padx=10)
-        self.titlebar.pack(expand=0, fill=BOTH)
-        # self.titlebar.pack_forget()
-        # make the frame in the middle
-        # if Titled == True: 
-        #     self.titlebar2.pack_forget()
-        #     self.titlebar.pack(expand=0, fill=BOTH)   
-    def startBar(self):
-        self.titlebar = Frame(root, background=FrameBG, bd=0)
 
+        self.titlebar.pack(expand=0, fill=BOTH)
+
+        RunOnce += 1
+
+        if RunOnce > 1:
+            # self.titlebar.pack_forget()
+            # self.titlebar.pack(expand=0, fill=BOTH)
+            pass
+    def startBar(self):
+        self.titlebar.pack_forget()
+        tittle().titleBar()
+        print("Destroyed")
+        
 
 # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
     def SaveLastClickPos(self, event):
@@ -276,6 +289,12 @@ class loginPage():
         self.form.pack(expand=1)
     
     def changeToSignup(self):
+
+        global inLogin, inSignup
+        inSignup = True
+        inLogin = False
+
+        tittle().startBar()
         self.form.pack_forget()
         signupPage().startSignup()
 
@@ -448,6 +467,12 @@ class signupPage():
         self.signupFrame.pack(expand=1)
 
     def changeToLogin(self):
+
+        global inLogin, inSignup
+        inSignup = False
+        inLogin = True
+
+        tittle().startBar()
         self.signupFrame.pack_forget()
         loginPage().startLogin()
 
@@ -462,7 +487,7 @@ def main():
     root.geometry('1280x720')
 
     #* comment this function if u don't want custom title
-    tittle()
+    tittle().titleBar()
     loginPage()
     # signupPage()
     # root.config(background=FrameBG)
