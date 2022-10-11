@@ -51,7 +51,7 @@ class tittle():
 
         root.overrideredirect(True)
         root.after(10, lambda: self.set_appwindow(root))
-        self.titlebar = Frame(root, background=FrameBG, bd=0)
+        # self.titlebar = Frame(root, background=FrameBG, bd=0)
         #*----------------------------------------------------------------------------------------------------------------------------------------
         # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
         self.titlebar.bind('<Button-1>', self.SaveLastClickPos)
@@ -87,6 +87,7 @@ class tittle():
         if RunOnce > 1:
             self.titlebar.pack_forget()
             self.titlebar.pack(expand=0, fill=BOTH)
+            self.titlebar.lift()
             pass
     def startBar(self):
         self.titlebar.pack_forget()
