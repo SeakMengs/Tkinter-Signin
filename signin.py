@@ -1,6 +1,7 @@
 import csv
 from tkinter import *
 from tkinter import messagebox
+from turtle import title
 from PIL import Image, ImageTk
 from ctypes import windll
 
@@ -85,9 +86,8 @@ class tittle():
         RunOnce += 1
 
         if RunOnce > 1:
-            self.titlebar.pack_forget()
-            self.titlebar.pack(expand=0, fill=BOTH)
-            self.titlebar.lift()
+            # self.titlebar.pack_forget()
+            # self.titlebar.pack(expand=0, fill=BOTH)
             pass
     def startBar(self):
         self.titlebar.pack_forget()
