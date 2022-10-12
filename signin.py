@@ -7,9 +7,9 @@ from ctypes import windll
 
 #* Constatnt
 global FrameBG, FontFG, BoxBG, SignupBG, SignupFG, SignupBOX, LoginBG , LoginFG, LoginBOX
-FrameBG='#005D85'
-FontFG='#FFFFFF'
-BoxBG='#3A96BD'
+FrameBG= '#005D85'
+FontFG= '#FFFFFF'
+BoxBG= '#3A96BD'
 
 LoginBG = '#005D85'
 LoginFG = '#FFFFFF'
@@ -23,7 +23,6 @@ is_ticked = False
 is_tickedSignup = False
 inLogin = True
 inSignup = False
-RunOnce = 0
 # Some WindowsOS styles, required for task bar integration
 GWL_EXSTYLE = -20
 WS_EX_APPWINDOW = 0x00040000
@@ -31,69 +30,52 @@ WS_EX_TOOLWINDOW = 0x00000080
 #*
 
 #*----------------------------------------------------------------------------------------------------------------------------------------
-class tittle():
+class customTitle():
     def __init__(self):
 
-        global FrameBG, FontFG, BoxBG, SignupBG, SignupFG, SignupBOX, LoginBG , LoginFG, LoginBOX
-        global inLogin, inSignup
-
-        if inLogin == True:
-            FrameBG, FontFG, BoxBG = LoginBG, LoginFG, LoginBOX
-        if inSignup == True:
-            print('change to purple')
-            FrameBG, FontFG, BoxBG = SignupBG, SignupFG, SignupBOX
-
         self.root = root
-        self.titlebar = Frame(root, background=FrameBG, bd=0)
 
     def titleBar(self):
+        global titlebar, titlebarLabel, titlebarBtn, titlebarBtn2, titlebarBtn3
         # ? Create my own titlebar
-        global RunOnce
 
         root.overrideredirect(True)
         root.after(10, lambda: self.set_appwindow(root))
-        # self.titlebar = Frame(root, background=FrameBG, bd=0)
+        titlebar = Frame(root, background=FrameBG, bd=0)
         #*----------------------------------------------------------------------------------------------------------------------------------------
         # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
-        self.titlebar.bind('<Button-1>', self.SaveLastClickPos)
-        self.titlebar.bind('<B1-Motion>', self.Dragging)
-        self.titlebar.bind("<Map>", self.frameMapped) # This brings back the window
+        titlebar.bind('<Button-1>', self.SaveLastClickPos)
+        titlebar.bind('<B1-Motion>', self.Dragging)
+        titlebar.bind("<Map>", self.frameMapped) # This brings back the window
         #*----------------------------------------------------------------------------------------------------------------------------------------
 
         self.icon = Image.open('asset\\bank.png')
         self.icon = self.icon.resize((22, 22))
         self.icon = ImageTk.PhotoImage(self.icon)
-        Label(self.titlebar, text='  Yato Bank', font=('Lexend', 16), bg=FrameBG, fg=FontFG, image=self.icon, compound=LEFT).pack(side=LEFT, pady=10, padx=10)
+        titlebarLabel = Label(titlebar, text='  Yato Bank', font=('Lexend', 16), bg=FrameBG, fg=FontFG, image=self.icon, compound=LEFT)
+        titlebarLabel.pack(side=LEFT, pady=10, padx=10)
 
         # ? Open image using pil (for resize purpose)
         self.closeIcon = Image.open("asset\\close.png")
         self.closeIcon = self.closeIcon.resize((24, 24))
         self.closeIcon = ImageTk.PhotoImage(self.closeIcon)
-        Button(self.titlebar, image=self.closeIcon, command=root.destroy, background=FrameBG, bd=0, activebackground=FrameBG).pack(side=RIGHT, pady=10, padx=10)
+        titlebarBtn = Button(titlebar, image=self.closeIcon, command=root.destroy, background=FrameBG, bd=0, activebackground=FrameBG)
+        titlebarBtn.pack(side=RIGHT, pady=10, padx=10)
 
         self.maximizeIcon = Image.open("asset\\maximize.png")
         self.maximizeIcon = self.maximizeIcon.resize((24, 24))
         self.maximizeIcon = ImageTk.PhotoImage(self.maximizeIcon)
-        Button(self.titlebar, image=self.maximizeIcon, command=self.fullScreen, background=FrameBG, bd=0, activebackground=FrameBG).pack(side=RIGHT, pady=10, padx=10)
+        titlebarBtn2 = Button(titlebar, image=self.maximizeIcon, command=self.fullScreen, background=FrameBG, bd=0, activebackground=FrameBG)
+        titlebarBtn2.pack(side=RIGHT, pady=10, padx=10)
 
         self.minimizeIcon = Image.open("asset\\minus.png")
         self.minimizeIcon = self.minimizeIcon.resize((24, 24))
         self.minimizeIcon = ImageTk.PhotoImage(self.minimizeIcon)
-        Button(self.titlebar, image=self.minimizeIcon, command=self.minimizeGUI, background=FrameBG, bd=0, activebackground=FrameBG).pack(side=RIGHT, pady=10, padx=10)
+        titlebarBtn3 = Button(titlebar, image=self.minimizeIcon, command=self.minimizeGUI, background=FrameBG, bd=0, activebackground=FrameBG)
+        titlebarBtn3.pack(side=RIGHT, pady=10, padx=10)
 
-        self.titlebar.pack(expand=0, fill=BOTH)
+        titlebar.pack(expand=0, fill=BOTH)
 
-        RunOnce += 1
-
-        if RunOnce > 1:
-            # self.titlebar.pack_forget()
-            # self.titlebar.pack(expand=0, fill=BOTH)
-            pass
-    def startBar(self):
-        self.titlebar.pack_forget()
-        # tittle().titleBar()
-        print("Destroyed")
-        
 
 # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
     def SaveLastClickPos(self, event):
@@ -177,7 +159,7 @@ class loginPage():
         FrameBG, FontFG, BoxBG = LoginBG, LoginFG, LoginBOX
 
         self.root = root
-        self.form = Frame(root, background=FrameBG)
+        self.form = Frame(root, background=LoginBG)
 
         global inLogin, inSignup
         inSignup = False
@@ -185,39 +167,39 @@ class loginPage():
         self.uiLogo()
 
         # ? create frame of the form
-        # self.form = Frame(root, background=FrameBG)
+        # self.form = Frame(root, background=LoginBG)
 
         self.entryBox = PhotoImage(file='asset\entrybox.png')
-        Label(self.form, text='Sign in', font=('Lexend', 64), bg=FrameBG, fg=FontFG).grid(row=0)
-        Label(self.form, text='sign in to start managing your bank account', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG).grid(row=1, pady=20)
+        Label(self.form, text='Sign in', font=('Lexend', 64), bg=LoginBG, fg=LoginFG).grid(row=0)
+        Label(self.form, text='sign in to start managing your bank account', font=('Lexend Deca', 16), bg=LoginBG, fg=LoginFG).grid(row=1, pady=20)
 
-        Label(self.form, text='Username', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG,).grid(row=2, sticky=W, padx=(50))
-        Label(self.form, image=self.entryBox, bg=FrameBG, compound=BOTTOM).grid(row=3, pady=(0,20))
-        self.username = Entry(self.form, font=('Lexend Deca', 16), background=BoxBG, foreground=FontFG,bd=0, insertbackground='white')
+        Label(self.form, text='Username', font=('Lexend Deca', 16), bg=LoginBG, fg=LoginFG,).grid(row=2, sticky=W, padx=(50))
+        Label(self.form, image=self.entryBox, bg=LoginBG, compound=BOTTOM).grid(row=3, pady=(0,20))
+        self.username = Entry(self.form, font=('Lexend Deca', 16), background=LoginBOX, foreground=LoginFG,bd=0, insertbackground='white')
         self.username.grid(row=3, pady=(0, 20))
     
-        Label(self.form, text='Password', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG,).grid(row=4, sticky=W, padx=(50))
-        Label(self.form, image=self.entryBox, bg=FrameBG).grid(row=5, pady=(0,20))
-        self.pw = Entry(self.form, font=('Lexend Deca', 16), background=BoxBG, foreground=FontFG,bd=0,show='*', exportselection=0, insertbackground='white')
+        Label(self.form, text='Password', font=('Lexend Deca', 16), bg=LoginBG, fg=LoginFG,).grid(row=4, sticky=W, padx=(50))
+        Label(self.form, image=self.entryBox, bg=LoginBG).grid(row=5, pady=(0,20))
+        self.pw = Entry(self.form, font=('Lexend Deca', 16), background=LoginBOX, foreground=LoginFG,bd=0,show='*', exportselection=0, insertbackground='white')
         self.pw.grid(row=5, pady=(0,20))
 
         self.checkIcon = PhotoImage(file="asset\\checkbox.png")
-        self.checkbox = Button(self.form, text='remember me', font=('Lexend Deca', 10), bg=FrameBG, fg=FontFG, image=self.checkIcon, compound=LEFT, bd=0, activebackground=FrameBG, activeforeground=FontFG, command=self.ticked, cursor='hand2')
+        self.checkbox = Button(self.form, text='remember me', font=('Lexend Deca', 10), bg=LoginBG, fg=LoginFG, image=self.checkIcon, compound=LEFT, bd=0, activebackground=LoginBG, activeforeground=LoginFG, command=self.ticked, cursor='hand2')
         self.checkbox.grid(row=6, column=0,sticky=W, padx=(55))
 
-        Button(self.form, text='forgot password?', font=('Lexend Deca', 10), bg=FrameBG, fg=FontFG, bd=0, activebackground=FrameBG, activeforeground=FontFG, cursor='hand2').grid(row=6, column=0, sticky=E, padx=(0, 50))
+        Button(self.form, text='forgot password?', font=('Lexend Deca', 10), bg=LoginBG, fg=LoginFG, bd=0, activebackground=LoginBG, activeforeground=LoginFG, cursor='hand2').grid(row=6, column=0, sticky=E, padx=(0, 50))
 
-        self.Login = Button(self.form,text='Login',font=('Lexend Deca', 16), image=self.entryBox, background=FrameBG, foreground=FontFG,bd=0,
-        compound='center', activebackground=FrameBG, activeforeground=FrameBG, command=self.checkExist, cursor='hand2')
+        self.Login = Button(self.form,text='Login',font=('Lexend Deca', 16), image=self.entryBox, background=LoginBG, foreground=LoginFG,bd=0,
+        compound='center', activebackground=LoginBG, activeforeground=LoginBG, command=self.checkExist, cursor='hand2')
         self.Login.grid(row=7, pady=31)
         # ? bind click Enter key to login button
         self.root.bind("<Return>", lambda e: self.checkExist())
 
-        Label(self.form, text='Need an account?', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG,).grid(row=8, sticky=W, padx=(68))
-        Button(self.form, text='SIGN UP', font=('Lexend Deca', 16, 'bold'), bg=FrameBG, fg=FontFG, bd=0, activebackground=FrameBG, activeforeground=FontFG, command=self.changeToSignup, cursor='hand2').grid(row=8, sticky=E, padx=(0, 70))
+        Label(self.form, text='Need an account?', font=('Lexend Deca', 16), bg=LoginBG, fg=LoginFG,).grid(row=8, sticky=W, padx=(68))
+        Button(self.form, text='SIGN UP', font=('Lexend Deca', 16, 'bold'), bg=LoginBG, fg=LoginFG, bd=0, activebackground=LoginBG, activeforeground=LoginFG, command=self.changeToSignup, cursor='hand2').grid(row=8, sticky=E, padx=(0, 70))
         
         self.form.pack(expand=1)
-        root.config(background=FrameBG)
+        root.config(background=LoginBG)
 
     def ticked(self):
         global is_ticked
@@ -275,7 +257,7 @@ class loginPage():
             self.loginLogo = self.loginLogo.resize((360,360))
             self.loginLogo = ImageTk.PhotoImage(self.loginLogo)
 
-            self.loginBG = Label(self.root, image=self.loginLogo, bg=FrameBG)
+            self.loginBG = Label(self.root, image=self.loginLogo, bg=LoginBG)
             self.loginBG.place(anchor=E, relx = 0.95, rely = .57)
 
     #* switch frame
@@ -284,18 +266,22 @@ class loginPage():
         inSignup = False
         inLogin = True
 
-        # tittle().titlebar.destroy()
-        # tittle().startBar()
         self.form.pack(expand=1)
     
     def changeToSignup(self):
 
         global inLogin, inSignup
+        global titlebar, titlebarLabel, titlebarBtn, titlebarBtn2, titlebarBtn3
         inSignup = True
         inLogin = False
 
-        tittle().startBar()
         self.form.pack_forget()
+        # ? change titlebar colors
+        titlebar.configure(bg=SignupBG)
+        titlebarLabel.configure(bg=SignupBG)
+        titlebarBtn.configure(bg=SignupBG)
+        titlebarBtn2.configure(bg=SignupBG)
+        titlebarBtn3.configure(bg=SignupBG)
         signupPage().startSignup()
 
 #*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -308,7 +294,7 @@ class signupPage():
         FrameBG, FontFG, BoxBG = SignupBG, SignupFG, SignupBOX
 
         self.root = root
-        self.signupFrame = Frame(root, background=FrameBG)
+        self.signupFrame = Frame(root, background=SignupBG)
 
         global inLogin, inSignup
         inSignup = True
@@ -316,42 +302,42 @@ class signupPage():
         self.signupLogo()
 
         # ? create frame of the signup
-        # self.signupFrame = Frame(root, background=FrameBG)
+        # self.signupFrame = Frame(root, background=SignupBG)
 
         self.entryBox = PhotoImage(file='asset\entrybox2.png')
-        Label(self.signupFrame, text='Sign up', font=('Lexend', 64), bg=FrameBG, fg=FontFG).grid(row=0)
-        Label(self.signupFrame, text='Signup to start managing your bank account', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG).grid(row=1, pady=20)
+        Label(self.signupFrame, text='Sign up', font=('Lexend', 64), bg=SignupBG, fg=SignupFG).grid(row=0)
+        Label(self.signupFrame, text='Signup to start managing your bank account', font=('Lexend Deca', 16), bg=SignupBG, fg=SignupFG).grid(row=1, pady=20)
 
-        Label(self.signupFrame, text='Username', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG,).grid(row=2, sticky=W, padx=(50))
-        Label(self.signupFrame, image=self.entryBox, bg=FrameBG, compound=BOTTOM).grid(row=3, pady=(0,20))
-        self.username = Entry(self.signupFrame, font=('Lexend Deca', 16), background=BoxBG, foreground=FontFG,bd=0, insertbackground='white')
+        Label(self.signupFrame, text='Username', font=('Lexend Deca', 16), bg=SignupBG, fg=SignupFG,).grid(row=2, sticky=W, padx=(50))
+        Label(self.signupFrame, image=self.entryBox, bg=SignupBG, compound=BOTTOM).grid(row=3, pady=(0,20))
+        self.username = Entry(self.signupFrame, font=('Lexend Deca', 16), background=SignupBOX, foreground=SignupFG,bd=0, insertbackground='white')
         self.username.grid(row=3, pady=(0, 20))
     
-        Label(self.signupFrame, text='Password', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG,).grid(row=4, sticky=W, padx=(50))
-        Label(self.signupFrame, image=self.entryBox, bg=FrameBG).grid(row=5, pady=(0,20))
-        self.pw = Entry(self.signupFrame, font=('Lexend Deca', 16), background=BoxBG, foreground=FontFG,bd=0,show='*', exportselection=0, insertbackground='white')
+        Label(self.signupFrame, text='Password', font=('Lexend Deca', 16), bg=SignupBG, fg=SignupFG,).grid(row=4, sticky=W, padx=(50))
+        Label(self.signupFrame, image=self.entryBox, bg=SignupBG).grid(row=5, pady=(0,20))
+        self.pw = Entry(self.signupFrame, font=('Lexend Deca', 16), background=SignupBOX, foreground=SignupFG,bd=0,show='*', exportselection=0, insertbackground='white')
         self.pw.grid(row=5, pady=(0,20))
 
-        Label(self.signupFrame, text='Pin-Code', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG,).grid(row=6, sticky=W, padx=(50))
-        Label(self.signupFrame, image=self.entryBox, bg=FrameBG).grid(row=7, pady=(0,20))
-        self.pin = Entry(self.signupFrame, font=('Lexend Deca', 16), background=BoxBG, foreground=FontFG,bd=0,show='*', exportselection=0, insertbackground='white')
+        Label(self.signupFrame, text='Pin-Code', font=('Lexend Deca', 16), bg=SignupBG, fg=SignupFG,).grid(row=6, sticky=W, padx=(50))
+        Label(self.signupFrame, image=self.entryBox, bg=SignupBG).grid(row=7, pady=(0,20))
+        self.pin = Entry(self.signupFrame, font=('Lexend Deca', 16), background=SignupBOX, foreground=SignupFG,bd=0,show='*', exportselection=0, insertbackground='white')
         self.pin.grid(row=7, pady=(0,20))
 
         self.checkIcon = PhotoImage(file="asset\\checkbox2.png")
-        self.checkbox = Button(self.signupFrame, text='Terms and Conditions agreement', font=('Lexend Deca', 10), bg=FrameBG, fg=FontFG, image=self.checkIcon, compound=LEFT, bd=0, activebackground=FrameBG, activeforeground=FontFG, cursor='hand2', command=self.signupTicked)
+        self.checkbox = Button(self.signupFrame, text='Terms and Conditions agreement', font=('Lexend Deca', 10), bg=SignupBG, fg=SignupFG, image=self.checkIcon, compound=LEFT, bd=0, activebackground=SignupBG, activeforeground=SignupFG, cursor='hand2', command=self.signupTicked)
         self.checkbox.grid(row=8, column=0,sticky=W, padx=(55))
 
-        self.signupBtn = Button(self.signupFrame,text='Sign up',font=('Lexend Deca', 16), image=self.entryBox, background=FrameBG, foreground=FontFG,bd=0,
-        compound='center', activebackground=FrameBG, activeforeground=FrameBG, cursor='hand2', command=self.createAccount)
+        self.signupBtn = Button(self.signupFrame,text='Sign up',font=('Lexend Deca', 16), image=self.entryBox, background=SignupBG, foreground=SignupFG,bd=0,
+        compound='center', activebackground=SignupBG, activeforeground=SignupBG, cursor='hand2', command=self.createAccount)
         self.signupBtn.grid(row=9, pady=31)
         # ? bind click Enter key to login button
         self.root.bind("<Return>", lambda e: self.createAccount())
 
-        Label(self.signupFrame, text='Already have an account?', font=('Lexend Deca', 16), bg=FrameBG, fg=FontFG,).grid(row=10, sticky=W, padx=(40))
-        Button(self.signupFrame, text='SIGN IN', font=('Lexend Deca', 16, 'bold'), bg=FrameBG, fg=FontFG, bd=0, activebackground=FrameBG, activeforeground=FontFG, command=self.changeToLogin, cursor='hand2').grid(row=10, sticky=E, padx=(0, 35))
+        Label(self.signupFrame, text='Already have an account?', font=('Lexend Deca', 16), bg=SignupBG, fg=SignupFG,).grid(row=10, sticky=W, padx=(40))
+        Button(self.signupFrame, text='SIGN IN', font=('Lexend Deca', 16, 'bold'), bg=SignupBG, fg=SignupFG, bd=0, activebackground=SignupBG, activeforeground=SignupFG, command=self.changeToLogin, cursor='hand2').grid(row=10, sticky=E, padx=(0, 35))
         
         self.signupFrame.pack(expand=1)
-        root.config(background=FrameBG)
+        root.config(background=SignupBG)
 
     def createAccount(self):
         global is_tickedSignup
@@ -462,18 +448,21 @@ class signupPage():
         inSignup = True
         inLogin = False
         
-        # tittle().titlebar.destroy()
-        # tittle().startBar()
         self.signupFrame.pack(expand=1)
 
     def changeToLogin(self):
 
         global inLogin, inSignup
+        global titlebar, titlebarLabel, titlebarBtn, titlebarBtn2, titlebarBtn3
         inSignup = False
         inLogin = True
 
-        tittle().startBar()
         self.signupFrame.pack_forget()
+        titlebar.configure(bg=LoginBG)
+        titlebarLabel.configure(bg=LoginBG)
+        titlebarBtn.configure(bg=LoginBG)
+        titlebarBtn2.configure(bg=LoginBG)
+        titlebarBtn3.configure(bg=LoginBG)
         loginPage().startLogin()
 
 
@@ -487,7 +476,7 @@ def main():
     root.geometry('1280x720')
 
     #* comment this function if u don't want custom title
-    tittle().titleBar()
+    customTitle().titleBar()
     loginPage()
     # signupPage()
     # root.config(background=FrameBG)
