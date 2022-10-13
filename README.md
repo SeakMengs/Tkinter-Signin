@@ -2,7 +2,7 @@
 
 This is a design with customized titlebar!
 
-#Pre-design can be found here
+# Pre-design can be found here
 https://www.figma.com/file/mIjlr7Ud159MdN6XvkTiUC/Bank-design?node-id=0%3A1
 
 # Preview 
