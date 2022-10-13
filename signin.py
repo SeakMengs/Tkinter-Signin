@@ -1,7 +1,6 @@
 import csv
 from tkinter import *
 from tkinter import messagebox
-from turtle import title
 from PIL import Image, ImageTk
 from ctypes import windll
 
