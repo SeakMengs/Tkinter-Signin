@@ -2,6 +2,9 @@
 
 This is a design with customized titlebar!
 
+#Pre-design can be found here
+https://www.figma.com/file/mIjlr7Ud159MdN6XvkTiUC/Bank-design?node-id=0%3A1
+
 # Preview 
 ![preview](https://user-images.githubusercontent.com/54373229/194892898-554ebd8b-5854-4115-9fc3-cd4233f44c9f.png)
 # Preview transparent mode
