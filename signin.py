@@ -279,9 +279,9 @@ class loginPage():
         # ? change titlebar colors
         titlebar.configure(bg=SignupBG)
         titlebarLabel.configure(bg=SignupBG)
-        titlebarBtn.configure(bg=SignupBG)
-        titlebarBtn2.configure(bg=SignupBG)
-        titlebarBtn3.configure(bg=SignupBG)
+        titlebarBtn.configure(bg=SignupBG, activebackground=SignupBG)
+        titlebarBtn2.configure(bg=SignupBG, activebackground=SignupBG)
+        titlebarBtn3.configure(bg=SignupBG, activebackground=SignupBG)
         signupPage().startSignup()
 
 #*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -460,11 +460,10 @@ class signupPage():
         self.signupFrame.pack_forget()
         titlebar.configure(bg=LoginBG)
         titlebarLabel.configure(bg=LoginBG)
-        titlebarBtn.configure(bg=LoginBG)
-        titlebarBtn2.configure(bg=LoginBG)
-        titlebarBtn3.configure(bg=LoginBG)
+        titlebarBtn.configure(bg=LoginBG, activebackground=LoginBG)
+        titlebarBtn2.configure(bg=LoginBG, activebackground=LoginBG)
+        titlebarBtn3.configure(bg=LoginBG, activebackground=LoginBG)
         loginPage().startLogin()
-
 
 def main():
     global root, z
@@ -497,7 +496,7 @@ def main():
     root.minsize(width, height)
 
     #*---------------------------- window opacity 
-    root.attributes('-alpha',0.80)
+    # root.attributes('-alpha',0.80)
     #*-------------------------------------------
 
     root.mainloop()
