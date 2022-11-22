@@ -1,6 +1,7 @@
 import csv
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 from PIL import Image, ImageTk
 from ctypes import windll
 
@@ -75,6 +76,15 @@ class customTitle():
 
         titlebar.pack(expand=0, fill=BOTH)
 
+        #* Add the gripper for resizing the window
+        global style
+        style = ttk.Style(root)
+        #* modify background
+        style.configure('TSizegrip', background= FrameBG)
+        grip = ttk.Sizegrip(style="TSizegrip")
+        grip.place(relx=1.0, rely=1.0, anchor="se")
+        grip.bind("<B1-Motion>", self.resizeApp)
+
 
 # ? these functions copy from https://stackoverflow.com/questions/63217105/tkinter-overridedirect-minimizing-and-windows-task-bar-issues
     def SaveLastClickPos(self, event):
@@ -147,6 +157,13 @@ class customTitle():
             root.state('zoomed')
             # print("minimized")
 
+    def resizeApp(self, e):
+        x1 = root.winfo_pointerx()
+        y1 = root.winfo_pointery()
+
+        # print(f"x1 = {x1}, y1 = {y1}")
+
+        root.geometry(f"{x1}x{y1}")
 
 #*----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #* Sign in page
@@ -276,6 +293,7 @@ class loginPage():
 
         self.form.pack_forget()
         # ? change titlebar colors
+        style.configure('TSizegrip', background= SignupBG)
         titlebar.configure(bg=SignupBG)
         titlebarLabel.configure(bg=SignupBG)
         titlebarBtn.configure(bg=SignupBG, activebackground=SignupBG)
@@ -457,6 +475,7 @@ class signupPage():
         inLogin = True
 
         self.signupFrame.pack_forget()
+        style.configure('TSizegrip', background= LoginBG)
         titlebar.configure(bg=LoginBG)
         titlebarLabel.configure(bg=LoginBG)
         titlebarBtn.configure(bg=LoginBG, activebackground=LoginBG)
