@@ -6,6 +6,8 @@ from PIL import Image, ImageTk
 from ctypes import windll
 
 #* Constatnt
+global last_width, last_height, last_x, last_y, is_fullScreen
+is_fullScreen = False
 global FrameBG, FontFG, BoxBG, SignupBG, SignupFG, SignupBOX, LoginBG , LoginFG, LoginBOX
 FrameBG= '#005D85'
 FontFG= '#FFFFFF'
@@ -127,35 +129,49 @@ class customTitle():
             z = 0
     #*----------------------------------------------------------------------------------------------------------------------------------------
 
-    def fullScreen(self):
-        self.is_fullScreen = BooleanVar
+    # def fullScreen(self):
+    #     self.is_fullScreen = BooleanVar
 
-        self.current_width = root.winfo_width()
-        self.current_height = root.winfo_height()
-        # print(self.current_width)
+    #     self.current_width = root.winfo_width()
+    #     self.current_height = root.winfo_height()
+    #     # print(self.current_width)
 
-        screenWidth = root.winfo_screenwidth()
-        screenHeight = root.winfo_screenheight()
+    #     screenWidth = root.winfo_screenwidth()
+    #     screenHeight = root.winfo_screenheight()
         
-        x2 = int((screenWidth/2) - (self.current_width/2))
-        y2 = int((screenHeight/2) - (self.current_height/2))
+    #     x2 = int((screenWidth/2) - (self.current_width/2))
+    #     y2 = int((screenHeight/2) - (self.current_height/2))
 
-        if (root.winfo_width() == root.winfo_screenwidth() or root.winfo_height() == root.winfo_screenheight()):
-            self.is_fullScreen = True
+    #     if (root.winfo_width() == root.winfo_screenwidth() or root.winfo_height() == root.winfo_screenheight()):
+    #         self.is_fullScreen = True
+    #     else:
+    #         self.is_fullScreen = False
+
+    #     if self.is_fullScreen == True:
+    #         # root.attributes('-fullscreen', True)
+    #         # root.geometry(f"{current_width}x{self.current_height}")
+    #         root.state('normal')
+    #         # root.geometry('1280x720')
+    #         # print("fullscreen")
+    #     elif self.is_fullScreen == False:
+    #         # root.geometry(f"{screenWidth}x{screenHeight}")
+    #         # root.geometry("%dx%d" % (screenWidth, screenHeight))
+    #         root.state('zoomed')
+    #         # print("minimized")
+
+    def fullScreen(self):
+        # save last window size and position before going fullscreen then restore it when going back to windowed mode
+        global last_width, last_height, last_x, last_y, is_fullScreen
+        if is_fullScreen == False:
+            last_width = root.winfo_width()
+            last_height = root.winfo_height()
+            last_x = root.winfo_x()
+            last_y = root.winfo_y()
+            root.geometry("%dx%d+%d+%d" % (root.winfo_screenwidth(), root.winfo_screenheight(), 0, 0))
+            is_fullScreen = True
         else:
-            self.is_fullScreen = False
-
-        if self.is_fullScreen == True:
-            # root.attributes('-fullscreen', True)
-            # root.geometry(f"{current_width}x{self.current_height}")
-            root.state('normal')
-            # root.geometry('1280x720')
-            # print("fullscreen")
-        elif self.is_fullScreen == False:
-            # root.geometry(f"{screenWidth}x{screenHeight}")
-            # root.geometry("%dx%d" % (screenWidth, screenHeight))
-            root.state('zoomed')
-            # print("minimized")
+            root.geometry("%dx%d+%d+%d" % (last_width, last_height, last_x, last_y))
+            is_fullScreen = False
 
     def resizeApp(self, e):
         x1 = root.winfo_pointerx()
@@ -514,7 +530,7 @@ def main():
     root.minsize(width, height)
 
     #*---------------------------- window opacity 
-    # root.attributes('-alpha',0.80)
+    root.attributes('-alpha',0.90)
     #*-------------------------------------------
 
     root.mainloop()
